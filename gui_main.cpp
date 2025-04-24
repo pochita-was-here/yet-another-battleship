@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include "graphicBoardClass.cpp"
 #include <cstdlib>
 
@@ -12,10 +12,10 @@ int main()
 {
 
     Board board(10);
-    board.placeShip(3, 3, 4, 'h'); // тестовый корабль из 4 клеток
+    board.placeShip(3, 3, 4, 'h'); // С‚РµСЃС‚РѕРІС‹Р№ РєРѕСЂР°Р±Р»СЊ РёР· 4 РєР»РµС‚РѕРє
 
-    // Создание графической доски
-    GraphicBoard gb(board, 40, 50, 50); // 40px клетка, поле отрисуется от точки (50, 50)
+    // РЎРѕР·РґР°РЅРёРµ РіСЂР°С„РёС‡РµСЃРєРѕР№ РґРѕСЃРєРё
+    GraphicBoard gb(board, 40, 50, 50); // 40px РєР»РµС‚РєР°, РїРѕР»Рµ РѕС‚СЂРёСЃСѓРµС‚СЃСЏ РѕС‚ С‚РѕС‡РєРё (50, 50)
 
     RenderWindow window(VideoMode(600, 600), "Battleship Test");
 
@@ -29,7 +29,7 @@ int main()
         }
 
         window.clear(Color(200, 200, 200));
-        gb.draw(window, false); // false — показывать корабли
+        gb.draw(window, false); // false вЂ” РїРѕРєР°Р·С‹РІР°С‚СЊ РєРѕСЂР°Р±Р»Рё
         window.display();
     }
 }
