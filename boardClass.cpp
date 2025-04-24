@@ -83,16 +83,37 @@ public:
     //    field = vector<char>();
     //}
 
-	void print()
+	void print(bool hideShips=false)
 	{
-		for (int i = 0; i < size; i++)
-		{
-			for (int k = 0; k < size; k++)
-			{
-				cout << field[k + (size * i)] << " ";
-			}
-			cout << endl;
-		}
+        if (hideShips == true)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int k = 0; k < size; k++)
+                {
+                    if (field[k + (size * i)] == 'O')
+                    {
+                        cout << "." << " ";
+                    }
+                    else
+                    {
+                        cout << field[k + (size * i)] << " ";
+                    }
+                }
+                cout << endl;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int k = 0; k < size; k++)
+                {
+                        cout << field[k + (size * i)] << " ";
+                }
+                cout << endl;
+            }
+        }
 	}
 
     void placeShip(int x, int y, int shipLength, char direction)

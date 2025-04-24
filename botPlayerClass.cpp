@@ -1,6 +1,8 @@
 #pragma once
 #include "playerClass.cpp"
 #include <random>
+#include <map>
+
 
 class BotPlayer
 {
@@ -12,6 +14,7 @@ private:
 	pair<int, int> lastHit = make_pair(-1, -1);
 	vector <pair<int, int>> targetQueue;
 	char currentDirection='\0';
+	bool triedReverse = false;
 
 public:
 
@@ -141,6 +144,22 @@ public:
 	{
 		pair<int, int> temp;
 
+		map<char, pair<int, int>> directionMap = 
+		{
+			{'r', {1, 0}},
+			{'l', {-1, 0}},
+			{'u', {0, -1}},
+			{'d', {0, 1}}
+		};
+
+		map<char, char> reverseMap = 
+		{
+			{'r', 'l'},
+			{'l', 'r'},
+			{'u', 'd'},
+			{'d', 'u'}
+		};
+
 		if (huntMode)
 		{
 			random_device rnd;
@@ -148,30 +167,72 @@ public:
 			uniform_int_distribution<> dist(0, remainingShots.size() - 1);
 
 			int tempIndex = dist(gen);
-
+				
 			temp = remainingShots[tempIndex];
 
 			remainingShots.erase(remainingShots.begin() + tempIndex);
 
 			return temp;
 		}
-		else if (!huntMode)
+		if (!huntMode && currentDirection != '\0')
 		{
-			if (currentDirection != '\0')
+			auto offset = directionMap[currentDirection];
+			pair<int, int> shot = { lastHit.first + offset.first, lastHit.second + offset.second };
+
+			if (isValidShot(shot))
 			{
-				if (currentDirection == 'r')
-				{
-					if (isValidShot(make_pair(lastHit.first + 1, lastHit.second)))
-					{
-						return make_pair(lastHit.first + 1, lastHit.second);
-					}
-					else
-					{
-						currentDirection == 'l';
-					}
-				}
+				remainingShots.erase(remove(remainingShots.begin(), remainingShots.end(), shot), remainingShots.end());
+				return shot;
+			}
+			else if (!triedReverse)
+			{
+				currentDirection = reverseMap[currentDirection];  // перейти в обратную сторону
+				triedReverse = true;
+			}
+			else
+			{
+				currentDirection = '\0';
+				triedReverse = false;
+				// можно пойти в targetQueue или перейти в huntMode, если она пуста
 			}
 		}
+		if (!huntMode && currentDirection == '\0')
+		{
+			if (!targetQueue.empty())
+			{
+				pair<int, int> shot = targetQueue.back();
+				targetQueue.pop_back();
+
+				remainingShots.erase(remove(remainingShots.begin(), remainingShots.end(), shot), remainingShots.end());
+				return shot;
+			}
+			else
+			{
+				// Вернуться к huntMode
+				huntMode = true;
+
+				random_device rnd;
+				mt19937 gen(rnd());
+				uniform_int_distribution<> dist(0, remainingShots.size() - 1);
+
+				int tempIndex = dist(gen);
+				temp = remainingShots[tempIndex];
+				remainingShots.erase(remainingShots.begin() + tempIndex);
+				return temp;
+			}
+		}
+
+		random_device rnd;
+		mt19937 gen(rnd()); // сид вихря мерсенна
+		uniform_int_distribution<> dist(0, remainingShots.size() - 1);    // на всякий случай чтобы не было undefined behavior
+
+		int tempIndex = dist(gen);
+
+		temp = remainingShots[tempIndex];
+
+		remainingShots.erase(remainingShots.begin() + tempIndex);
+
+		return temp;
 
 	}
 

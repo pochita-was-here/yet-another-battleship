@@ -29,9 +29,9 @@ public:
 		return board.isGameOver();
 	}
 
-	void printBoard()
+	void printBoard(bool hideShips)
 	{
-		board.print();
+		board.print(hideShips);
 	}
 
 
