@@ -200,4 +200,18 @@ public:
         return true;
     }
 
+    int getSize()
+    {
+        return size;
+    }
+
+    char getCell(int x, int y)
+    {
+        if (x < 1 || y < 1 || x > size || y > size)
+        {
+            return 'E'; // err
+        }
+        return field[cageIndex(x, y)];
+    }
+
 };
